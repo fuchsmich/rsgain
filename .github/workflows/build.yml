@@ -98,29 +98,42 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - name: Debian
+          - name: Debian amd64
+            arch: amd64
             docker_image: debian:bookworm
             package_type: DEB
             package_ext: .deb
             vcpkg_features: fmt;
+            vcpkg_triplet: x64-linux
+
+          - name: Debian arm64
+            arch: aarch64
+            docker_image: debian:bookworm
+            package_type: DEB
+            package_ext: .deb
+            vcpkg_features: fmt;
+            vcpkg_triplet: arm64-linux
 
           - name: Static
+            arch: amd64
             docker_image: debian:bullseye
             package_type: TXZ
             package_ext: .tar.xz
             vcpkg_features: fmt;ffmpeg;libebur128;inih;
+            vcpkg_triplet: x64-linux
 
     container:
       image: ${{matrix.config.docker_image}}
 
     env:
       CMAKE_BUILD_TYPE: Release
-      VCPKG_TRIPLET: x64-linux
+      #VCPKG_TRIPLET: x64-linux
 
     steps:
       - name: Checkout Git repository
         uses: actions/checkout@v3
         with:
+          arch: ${{matrix.config.arch}}
           fetch-depth: 0
 
       - name: "Install dependencies"
@@ -149,7 +162,7 @@ jobs:
       - name: Configure
         run: cmake -S . -B build 
                -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake"
-               -DVCPKG_TARGET_TRIPLET=${{env.VCPKG_TRIPLET}}
+               -DVCPKG_TARGET_TRIPLET=${{matrix.config.vcpkg_triplet}}
                -DVCPKG_MANIFEST_FEATURES="${{matrix.config.vcpkg_features}}"
                -DVCPKG_OVERLAY_PORTS=build/overlays/ports
                -DCMAKE_BUILD_TYPE=${{env.CMAKE_BUILD_TYPE}}
