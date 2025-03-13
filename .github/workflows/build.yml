@@ -138,7 +138,7 @@ jobs:
 
       - name: "Install dependencies"
         run: |
-          if [[ "${{matrix.config.name}}" == "Debian" ]]; then
+          if [[ "${{matrix.config.name}}" =~ ^Debian.* ]]; then
             apt update && apt install -y curl zip unzip gzip tar build-essential git cmake pkg-config libavcodec-dev libavformat-dev libavutil-dev libswresample-dev libebur128-dev libinih-dev binutils
           fi
           if [[ "${{matrix.config.name}}" == "Static" ]]; then
