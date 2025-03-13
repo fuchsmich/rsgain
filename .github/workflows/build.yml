@@ -112,7 +112,7 @@ jobs:
             package_type: DEB
             package_ext: .deb
             vcpkg_features: fmt;
-            vcpkg_triplet: arm64-linux
+            vcpkg_triplet: community/arm64-linux
 
           - name: Static
             arch: amd64
