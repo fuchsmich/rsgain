@@ -100,7 +100,7 @@ jobs:
         config:
           - name: Debian amd64
             os: ubuntu-latest        
-            arch: amd64
+            #arch: amd64
             docker_image: debian:bookworm
             package_type: DEB
             package_ext: .deb
@@ -108,7 +108,7 @@ jobs:
             vcpkg_triplet: x64-linux
 
           - name: Debian arm64
-            arch: aarch64
+            #arch: aarch64
             os: ubuntu-latest-arm
             docker_image: debian:bookworm
             package_type: DEB
@@ -117,7 +117,7 @@ jobs:
             vcpkg_triplet: arm64-linux
 
           - name: Static
-            arch: amd64
+            #arch: amd64
             os: ubuntu-latest
             docker_image: debian:bullseye
             package_type: TXZ
@@ -136,7 +136,7 @@ jobs:
       - name: Checkout Git repository
         uses: actions/checkout@v3
         with:
-          arch: ${{matrix.config.arch}}
+          #arch: ${{matrix.config.arch}}
           fetch-depth: 0
 
       - name: "Install dependencies"
@@ -165,7 +165,7 @@ jobs:
       - name: Configure
         run: cmake -S . -B build 
                -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake"
-               -DVCPKG_TARGET_TRIPLET=${{matrix.config.vcpkg_triplet}}
+               -DVCPKG_TARGET_TRIPLET="${{matrix.config.vcpkg_triplet}}"
                -DVCPKG_MANIFEST_FEATURES="${{matrix.config.vcpkg_features}}"
                -DVCPKG_OVERLAY_PORTS=build/overlays/ports
                -DCMAKE_BUILD_TYPE=${{env.CMAKE_BUILD_TYPE}}
